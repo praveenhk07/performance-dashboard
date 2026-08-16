@@ -16,8 +16,14 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
+interface DataProviderProps {
+  children: React.ReactNode;
+  initialData?: DataPoint[]; // ✅ added
+}
+
+export const DataProvider: React.FC<DataProviderProps> = ({
   children,
+  initialData = [],
 }) => {
   const [isStreaming, setIsStreaming] = useState<boolean>(true);
   const [timeRange, setTimeRange] = useState<TimeRange>("1m");
@@ -28,7 +34,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
     timeRange: "1m",
   });
 
-  const { data } = useDataStream(isStreaming);
+  // If streaming, use live data; otherwise fallback to initialData
+  const { data: streamData } = useDataStream(isStreaming);
+  const data = isStreaming ? streamData : initialData;
 
   return (
     <DataContext.Provider

@@ -4,11 +4,12 @@ import DashboardContent from "@/components/DashboardContent"; // Move UI tree to
 
 export default async function DashboardPage() {
   // Server-side generation for SSR requirement
-  const initialData = generateInitialDataset(10000);
+
 
   return (
-    <DataProvider initialData={initialData}>
-      <DashboardContent />
-    </DataProvider>
+    <DataProvider>
+  <DashboardContent />
+</DataProvider>
+
   );
 }
