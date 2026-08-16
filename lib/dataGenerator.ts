@@ -13,7 +13,7 @@ export function generateInitialDataset(count = 10000): DataPoint[] {
     data.push({
       timestamp: now - (count - i) * 100,
       value: Math.sin(i / 50) * 35 + 50 + (Math.random() * 10 - 5),
-      category: CATEGORIES[i % CATEGORIES.length],
+      category: CATEGORIES[i % CATEGORIES.length] as typeof CATEGORIES[number],
     });
   }
 
