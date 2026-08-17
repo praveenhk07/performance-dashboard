@@ -20,3 +20,12 @@ export interface PerformanceMetrics {
   renderTime: number; // in ms
   dataPointCount: number;
 }
+
+// types.ts
+export type Category = "CPU" | "Memory" | "Network" | "Disk";
+
+export interface DataPoint {
+  timestamp: number;
+  value: number;
+  category: Category;
+}

@@ -1,37 +1,48 @@
 import { DataPoint } from "./types";
 
-const CATEGORIES = ["CPU", "Memory", "Network", "Disk"];
+// Extract the literal union directly from DataPoint
+export const CATEGORIES: DataPoint["category"][] = [
+  "CPU",
+  "Memory",
+  "Network",
+  "Disk",
+];
 
-/**
- * Generates an initial historical block of points.
- */
-export function generateInitialDataset(count = 10000): DataPoint[] {
-  const now = Date.now();
+let globalStep = 0;
+
+function pseudoRandom(seed: number) {
+  const x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
+
+export function generateInitialDataset(count = 1000): DataPoint[] {
+  const baseTimestamp = 1700000000000;
   const data: DataPoint[] = [];
 
   for (let i = 0; i < count; i++) {
+    globalStep++;
+    const noise = pseudoRandom(i) * 6 - 3;
     data.push({
-      timestamp: now - (count - i) * 100,
-      value: Math.sin(i / 50) * 35 + 50 + (Math.random() * 10 - 5),
-      category: CATEGORIES[i % CATEGORIES.length] as typeof CATEGORIES[number],
+      timestamp: baseTimestamp + i * 100,
+      value: Math.sin(i / 50) * 35 + 50 + noise,
+      category: CATEGORIES[i % CATEGORIES.length],
     });
   }
 
   return data;
 }
 
-/**
- * Generates continuous real-time streaming batches for SSE / API polling.
- */
-export function generateDataBatch(count = 10): DataPoint[] {
+export function generateDataBatch(count = 5): DataPoint[] {
   const now = Date.now();
   const batch: DataPoint[] = [];
 
   for (let i = 0; i < count; i++) {
+    globalStep++;
+    const noise = Math.random() * 6 - 3;
     batch.push({
-      timestamp: now,
-      value: Math.floor(Math.random() * 80) + 10,
-      category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)],
+      timestamp: now + i * 20,
+      value: Math.sin(globalStep / 50) * 35 + 50 + noise,
+      category: CATEGORIES[globalStep % CATEGORIES.length],
     });
   }
 
